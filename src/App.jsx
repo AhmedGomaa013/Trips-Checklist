@@ -1,101 +1,38 @@
-import { useMemo, useState } from 'react'
+import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
+import ChecklistPage from './pages/ChecklistPage'
+import ExercisePlanPage from './pages/ExercisePlanPage'
 import './App.css'
 
-const initialItems = [
-  { id: 1, item: 'Socks', quantity: 4, packed: false },
-  { id: 2, item: 'Cap', quantity: 1, packed: false },
-  { id: 3, item: 'Anti-sweet', quantity: 1, packed: false },
-  { id: 4, item: 'Sunscreen', quantity: 1, packed: false },
-  { id: 5, item: 'Protein bars', quantity: 7, packed: false },
-  { id: 6, item: 'Yogurts', quantity: 3, packed: false },
-  { id: 7, item: 'Tuna', quantity: 1, packed: false },
-  { id: 8, item: 'Nuts', quantity: 1, packed: false },
-  { id: 9, item: 'Peanut butter', quantity: 1, packed: false },
-  { id: 10, item: 'Banana', quantity: 1, packed: false },
-  { id: 11, item: 'Wipes', quantity: 1, packed: false },
-  { id: 12, item: 'Handkerchief', quantity: 1, packed: false },
-  { id: 13, item: 'Crocks', quantity: 1, packed: false },
-  { id: 14, item: 'Power bank', quantity: 1, packed: false },
-  { id: 15, item: 'Charger', quantity: 1, packed: false },
-  { id: 16, item: 'Buzzer', quantity: 1, packed: false },
-]
-
 function App() {
-  const [items, setItems] = useState(initialItems)
-  const [activeTab, setActiveTab] = useState('todo')
-
-  const packedCount = useMemo(
-    () => items.filter((item) => item.packed).length,
-    [items],
-  )
-
-  const todoItems = items.filter((item) => !item.packed)
-  const packedItems = items.filter((item) => item.packed)
-  const visibleItems = activeTab === 'todo' ? todoItems : packedItems
-
-  const toggleItem = (id) => {
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === id ? { ...item, packed: !item.packed } : item,
-      ),
-    )
-  }
-
   return (
-    <main className="app-shell">
-      <section className="checklist-card">
-        <header className="checklist-header">
-          <p className="eyebrow">Trip Essentials</p>
-          <h1>Trips Checklist</h1>
-          <p className="summary">
-            {packedCount} of {items.length} packed
-          </p>
-        </header>
+    <HashRouter>
+      <main className="app-shell">
+        <div className="page-shell">
+          <header className="site-header">
+            <nav className="main-nav" aria-label="Main navigation">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+              >
+                Checklist
+              </NavLink>
+              <NavLink
+                to="/exercise-plan"
+                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+              >
+                Exercise Plan
+              </NavLink>
+            </nav>
+          </header>
 
-        <div className="tabs" role="tablist" aria-label="Packing tabs">
-          <button
-            type="button"
-            className={activeTab === 'todo' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('todo')}
-            aria-selected={activeTab === 'todo'}
-          >
-            To-do
-          </button>
-          <button
-            type="button"
-            className={activeTab === 'packed' ? 'tab active' : 'tab'}
-            onClick={() => setActiveTab('packed')}
-            aria-selected={activeTab === 'packed'}
-          >
-            Packed
-          </button>
+          <Routes>
+            <Route path="/" element={<ChecklistPage />} />
+            <Route path="/exercise-plan" element={<ExercisePlanPage />} />
+          </Routes>
         </div>
-
-        <ul className="checklist">
-          {visibleItems.length > 0 ? (
-            visibleItems.map(({ id, item, quantity, packed }) => (
-              <li key={id} className={packed ? 'packed' : ''}>
-                <label className="checklist-item">
-                  <input
-                    type="checkbox"
-                    checked={packed}
-                    onChange={() => toggleItem(id)}
-                  />
-                  <span className="item-name">{item}</span>
-                  <span className="item-quantity">x{quantity}</span>
-                </label>
-              </li>
-            ))
-          ) : (
-            <li className="empty-state-item">
-              {activeTab === 'todo'
-                ? 'No items left to pack.'
-                : 'No items packed yet.'}
-            </li>
-          )}
-        </ul>
-      </section>
-    </main>
+      </main>
+    </HashRouter>
   )
 }
 
