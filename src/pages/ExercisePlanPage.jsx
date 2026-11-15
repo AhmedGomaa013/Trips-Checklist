@@ -1,6 +1,6 @@
 const toKg = (value) => `${Number(value).toFixed(1).replace(/\.0$/, '')} kg`
 
-const MAX_WEIGHT_FACTOR = 0.7
+const MAX_WEIGHT_FACTOR = 0.9
 
 const getWeightedSets = (
   maxWeight,
